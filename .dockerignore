@@ -1,0 +1,22 @@
+# -*- mode: gitignore; -*-
+# Quay actually uses Dockerfile
+Dockerfile
+docker-compose.yml
+.git
+.github
+*.egg
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+pip-log.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.log
+node_modules
