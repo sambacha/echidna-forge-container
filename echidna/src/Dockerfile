@@ -1,12 +1,17 @@
 # syntax=docker/dockerfile-upstream:master-experimental
 FROM debian:bullseye AS builder-echidna
 ENV LD_LIBRARY_PATH=/usr/local/lib PREFIX=/usr/local HOST_OS=Linux
-RUN apt-get update && apt-get install -y --no-install-suggests --no-install-recommends \
+RUN apt-get update && apt-get install -y -qq --no-install-suggests --no-install-recommends \
         cmake \
         curl \
-        git \
         libbz2-dev \
         libgmp-dev \
+        build-essential \
+        dpkg-sig \
+        libcap-dev \
+        libc6-dev \
+        libgmp-dev \
+        libbz2-dev \
         libreadline-dev \
         libsecp256k1-dev \
         libssl-dev \
@@ -14,11 +19,13 @@ RUN apt-get update && apt-get install -y --no-install-suggests --no-install-reco
         sudo \
         && rm -rf /var/lib/apt/lists/* \
         && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-
+    
+WORKDIR /echidna
+COPY .github/scripts/install-libff.sh .
+RUN install-libff.sh
 RUN curl -sSL https://get.haskellstack.org/ | sh
 COPY . /echidna/
-WORKDIR /echidna
-RUN .github/scripts/install-libff.sh
+
 RUN stack upgrade && stack setup && stack install --extra-include-dirs=/usr/local/include --extra-lib-dirs=/usr/local/lib
 
 FROM debian:bullseye AS builder-python3
